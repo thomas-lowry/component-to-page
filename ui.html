@@ -2,39 +2,39 @@
 *{-webkit-box-sizing:border-box;box-sizing:border-box}@font-face{font-family:Inter;font-weight:400;font-style:normal;src:url(https://rsms.me/inter/font-files/Inter-Regular.woff2?v=3.7) format('woff2'),url(https://rsms.me/inter/font-files/Inter-Regular.woff?v=3.7) format('woff')}.label{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;align-items:center;-ms-flex-align:center;height:32px;padding:8px 4px 8px 8px;font-family:Inter,sans-serif;font-size:11px;font-weight:400;line-height:16px;letter-spacing:.005em;cursor:default;color:rgba(0,0,0,.3);background-color:#fff}.button{display:inline-block;-ms-flex-negative:0;flex-shrink:0;margin:1px 0 1px 0;padding:5px 16px 5px 16px;text-decoration:none;border:2px solid transparent;border-radius:6px;outline:0}.button--primary{font-family:Inter,sans-serif;font-size:11px;font-weight:500;line-height:16px;letter-spacing:.01em;color:#fff;background-color:#18a0fb}.button--primary:enabled:active,.button--primary:enabled:focus{border:2px solid rgba(0,0,0,.3)}.button--primary:disabled{background-color:rgba(0,0,0,.3)}.button--primary-destructive{font-family:Inter,sans-serif;font-size:11px;font-weight:500;line-height:16px;letter-spacing:.01em;color:#fff;background-color:#f24822}.button--primary-destructive:enabled:active,.button--primary-destructive:enabled:focus{border:2px solid rgba(0,0,0,.3)}.button--primary-destructive:disabled{opacity:.4}.button--secondary{font-family:Inter,sans-serif;font-size:11px;font-weight:500;line-height:16px;letter-spacing:.005em;color:rgba(0,0,0,.8);border:1px solid rgba(0,0,0,.8);background-color:#fff}.button--secondary:enabled:active,.button--secondary:enabled:focus{padding:4px 15px 4px 15px;border:2px solid #18a0fb}.button--secondary:disabled{color:rgba(0,0,0,.3);border:1px solid rgba(0,0,0,.3)}.button--secondary-destructive{font-family:Inter,sans-serif;font-size:11px;font-weight:500;line-height:16px;letter-spacing:.005em;color:#f24822;border:1px solid #f24822;background-color:#fff}.button--secondary-destructive:enabled:active,.button--secondary-destructive:enabled:focus{padding:4px 15px 4px 15px;border:2px solid #f24822}.button--secondary-destructive:disabled{opacity:.4}.button--margin-right{margin-right:8px}.input{position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;overflow:visible;-webkit-box-align:center;align-items:center;-ms-flex-align:center;width:100%;height:30px;margin:1px 0 1px 0;padding:8px 4px 8px 7px;font-family:Inter,sans-serif;font-size:11px;font-weight:400;line-height:16px;letter-spacing:.005em;color:rgba(0,0,0,.8);border:1px solid transparent;border-radius:2px;outline:0;background-color:#fff}.input:hover{color:rgba(0,0,0,.8);border:1px solid rgba(0,0,0,.1)}.input::-moz-selection{color:#000;background-color:rgba(24,145,251,.3)}.input::selection{color:#000;background-color:rgba(24,145,251,.3)}.input::-webkit-input-placeholder{color:rgba(0,0,0,.3);border:1px solid transparent}.input:-ms-input-placeholder{color:rgba(0,0,0,.3);border:1px solid transparent}.input::-ms-input-placeholder{color:rgba(0,0,0,.3);border:1px solid transparent}.input::placeholder{color:rgba(0,0,0,.3);border:1px solid transparent}.input:not(:disabled):not(:hover):placeholder-shown{border:1px solid transparent;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAAABCAYAAABJ5n7WAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgSURBVHgB7cMBCQAACMTAiR3sX1TQHr+DK2B+I0lSjj29qAEYlIbeBgAAAABJRU5ErkJggg==);background-repeat:no-repeat;background-position:center bottom -.9px;background-size:calc(100% - 10px) 1px}.input:not(:disabled):focus:placeholder-shown{border:2px solid #18a0fb}.input:not(:disabled):focus:not(:placeholder-shown){padding-left:6px}.input:disabled:hover{border:1px solid transparent}.input:active,.input:focus{padding:8px 4px 8px 6px;color:#000;border:2px solid #18a0fb;border-radius:2px}.input:disabled{position:relative;color:rgba(0,0,0,.3)}.input:disabled:active{padding:8px 4px 8px 7px}
 
 .container {
-    display: flex;
-    padding: 8px;
-    height: 100%;
-    align-items: center;
-    flex-direction: column;
+	display: flex;
+	padding: 8px;
+	height: 100%;
+	align-items: center;
+	flex-direction: column;
 }
 
 .row {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	width: 100%;
+	align-items: center;
 }
 
 .mr8 {
-    margin-right: 8px;
+	margin-right: 8px;
 }
 
 .mt8 {
-    margin-top: 8px;
+	margin-top: 8px;
 }
 
 </style>
 
 <div class="container">
-    <div class="row">
-        <input id='componentName' type="input" class="input mr8" placeholder="Name">
-        <button id='create' class='button button--primary'>Create</button>
-    </div>
-    <div class="row mt8">
-        <div class="label">Component will be moved to your component page.</div>
-    </div>
+	<div class="row">
+		<input id='componentName' type="input" class="input mr8" placeholder="Component">
+		<button id='create' class='button button--primary'>Create</button>
+	</div>
+	<div class="row mt8">
+		<div class="label">Component will be moved to your component page.</div>
+	</div>
 </div>
 
 <script>
@@ -44,8 +44,15 @@ const button = document.getElementById('create');
 input.focus();
 
 button.addEventListener('click', function() {
-    let name = input.value;
-    parent.postMessage({ pluginMessage: { 'name': name} }, '*');
+	let name = input.value;
+	parent.postMessage({ pluginMessage: { 'name': name} }, '*');
+});
+
+input.addEventListener("keyup", function(event) {
+	if (event.keyCode === 13) {
+		event.preventDefault();
+		button.click();
+	}
 });
 
 </script>

@@ -39,7 +39,6 @@ figma.ui.onmessage = function (msg) {
 		let page = figma.createPage();
 		page.name = 'Components';
 		page.setPluginData('components','true');
-		page.setPluginData('width','0');
 		componentsPage = page;
 	}
 
@@ -75,23 +74,30 @@ figma.ui.onmessage = function (msg) {
 	instance.x = component.x;
 	instance.y = component.y;
 
-	// move master to designated page
-	componentsPage.appendChild(component);
-
 	// position in a row on components page
-	const totalWidth = parseInt(componentsPage.getPluginData('width'));
 	const spacing = 24; //how far to space components out
+	var yCoord = 0;
+	var xCoord = 0;
 
-	if (totalWidth == 0) {
-		component.x = 0;
-		var newWidth = component.width + spacing;
-		componentsPage.setPluginData('width', newWidth.toString());
-	} else {
-		component.x = totalWidth + spacing;
-		var newWidth = totalWidth + component.width + spacing;
-		componentsPage.setPluginData('width', newWidth.toString());
+	if (componentsPage.children.length !== 0) {
+		const componentsPageChildren = componentsPage.children;
+		const componentGroup = figma.group(componentsPageChildren, componentsPage);
+		const componentWidth = componentGroup.width;
+		const componentX = componentGroup.x;
+		const componentY = componentGroup.y;
+
+		for (const node of componentGroup.children) {
+			componentGroup.parent.appendChild(node)
+		}
+		
+		yCoord = componentY;
+		xCoord = componentX + componentWidth + spacing;
 	}
-	component.y = 0;
+
+	// move master to designated page + position
+	componentsPage.appendChild(component);
+	component.x = xCoord;
+	component.y = yCoord;
 
 	//update the selection
 	const page = figma.currentPage;
