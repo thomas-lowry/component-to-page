@@ -1,0 +1,7 @@
+{
+  "name": "Component to page",
+  "id": "749583881837062159",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html"
+}
