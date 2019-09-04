@@ -117,20 +117,21 @@ function createComponent(nodes) {
         }
     }
     if (componentInside === false) {
+        // get some basic info  about the selection
+        // we need to find the top most index of the nodes
+        // we also need the x and y coordinate relative to the parent
+        // we will use this when we insert the instance in place
+        let instancePlacement = getCoordsIndexParent(nodeArr);
         // first we need to create an empty component
         const component = figma.createComponent();
         // group the selection
         // this makes it easier to calculate total size for the component for when we reszie it
         const group = figma.group(nodeArr, figma.currentPage);
-        const x = group.x;
-        const y = group.y;
         const width = group.width;
         const height = group.height;
         //add group to component
         component.appendChild(group);
         //resize component and position group
-        component.x = x;
-        component.y = y;
         component.resize(width, height);
         group.x = 0;
         group.y = 0;
@@ -139,10 +140,23 @@ function createComponent(nodes) {
         for (const node of group.children) {
             group.parent.appendChild(node);
         }
-        // make an instance in the same place
+        // make an instance in the same place and insert at correct index
         const instance = component.createInstance();
-        instance.x = component.x;
-        instance.y = component.y;
+        let instanceIndex;
+        if (instancePlacement.index > instancePlacement.parent.children.length) {
+            if (instancePlacement.parent.children.length === 0) {
+                instanceIndex = 0;
+            }
+            else {
+                instanceIndex = instancePlacement.parent.children.length;
+            }
+        }
+        else {
+            instanceIndex = instancePlacement.index;
+        }
+        instancePlacement.parent.insertChild(instanceIndex, instance);
+        instance.x = instancePlacement.x;
+        instance.y = instancePlacement.y;
         // check if there is only one child that is a frame
         // if there is, move contents isnide component and delete frame
         // preserve background color of original frame
@@ -237,6 +251,29 @@ function findOrMakeComponentsPage() {
         newPage.setPluginData('components', 'true');
         componentsPage = newPage;
     }
+}
+//
+// HELPER FUNCTIONS //////////
+//
+// get the x/y coordinates to place the new instance
+// get top most index
+function getCoordsIndexParent(nodes) {
+    let xCoords = [];
+    let yCoords = [];
+    let indexes = [];
+    let parent = nodes[0].parent;
+    nodes.forEach(node => {
+        xCoords.push(node.x);
+        yCoords.push(node.y);
+        indexes.push(node.parent.children.indexOf(node));
+    });
+    let instancePlacement = {
+        'x': Math.min.apply(null, xCoords),
+        'y': Math.min.apply(null, yCoords),
+        'index': Math.max.apply(null, indexes),
+        'parent': parent
+    };
+    return instancePlacement;
 }
 // get overall width, and position of all contexts of components page
 function getWidthAndPosition() {
