@@ -155,11 +155,12 @@ function createComponent(nodes) {
 		const width = group.width;
 		const height = group.height;
 
+		//resize component and position group
+		component.resize(width, height);
+
 		//add group to component
 		component.appendChild(group);
 
-		//resize component and position group
-		component.resize(width, height);
 		group.x = 0;
 		group.y = 0;
 

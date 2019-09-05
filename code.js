@@ -129,10 +129,10 @@ function createComponent(nodes) {
         const group = figma.group(nodeArr, figma.currentPage);
         const width = group.width;
         const height = group.height;
-        //add group to component
-        component.appendChild(group);
         //resize component and position group
         component.resize(width, height);
+        //add group to component
+        component.appendChild(group);
         group.x = 0;
         group.y = 0;
         // ungroup elements inside the component
