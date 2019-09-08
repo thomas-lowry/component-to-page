@@ -1,45 +1,25 @@
 //
-// VARIABLES //////////
+// GLOBAL VARS //////////
 //
-const selection = figma.currentPage.selection;
-const componentSpacing = 24; //spacing between components on the components page
+const selection = figma.currentPage.selection, componentSpacing = 24;
 var componentsPage, componentName, toSelect = [], multipleComponents = false;
 
 
 //
-// ERROR HANDLING ON INIT //////////
+// COMMANDS //////////
 //
-
-// Check selection
-// Terminate plugin if selection is empty
-if (selection.length === 0) {
-	
-	// terminate plugin if nothing selected
-	figma.closePlugin('Please make a selection');
-
-} else if (selection.length >= 1) {
-	
-	// display UI with option to create multiple components
-	figma.showUI(__html__, { width: 360, height: 124 });
-	
-	// this passes a message to the UI so we can know to disable or enable the switch for multiple components
-	// if there is only one element selected,  disable this option
-	if (selection.length > 1) {
-		figma.ui.postMessage({
-        	'multipleComponents': true
-		});
-	} else {
-		figma.ui.postMessage({
-			'multipleComponents': false
-		});
-	}
-
+if (figma.command === 'collect') {
+	// this command will collect master comonents to components page
+	collect();
+} else {
+	// this option is used for creating new components
+	create();
 }
 
-//
-// COMMUNITCATE WITH UI //////////
-//
 
+// 
+// MESSAGES FROM UI //////////
+//
 figma.ui.onmessage = function (msg) {
 
 	findOrMakeComponentsPage();
@@ -49,7 +29,6 @@ figma.ui.onmessage = function (msg) {
 	}
 
 	if (msg.multipleComponents === true) {
-		
 		// create multiple components
 		multipleComponents = true;
 		selection.forEach(node => {
@@ -58,7 +37,6 @@ figma.ui.onmessage = function (msg) {
 			}
 			createComponent(node);
 		});
-
 	} else {
 		// create single component
 		multipleComponents = false;
@@ -71,13 +49,74 @@ figma.ui.onmessage = function (msg) {
 
 	// close the plugin
 	figma.closePlugin();
-
 }
 
 
+
 //
-// FUNCTIONS ////////
-//
+// CORE FUNCTIONS //////////
+// 
+
+// create components
+function create() {
+
+	if (checkData(selection) === true) {
+
+		// display UI with option to create multiple components
+		figma.showUI(__html__, { width: 360, height: 124 });
+		
+		// this passes a message to the UI so we can know to disable or enable the switch for multiple components
+		// if there is only one element selected,  disable this option
+		if (selection.length > 1) {
+			figma.ui.postMessage({
+				'multipleComponents': true
+			});
+		} else {
+			figma.ui.postMessage({
+				'multipleComponents': false
+			});
+		}
+
+	} else {
+		// terminate plugin if nothing selected
+		figma.closePlugin('Please make a selection');
+	}
+}
+
+
+// collect stray components
+function collect() {
+
+	findOrMakeComponentsPage();
+	const componentNodes = findComponents();
+
+	if (checkData(componentNodes) === true) {
+
+		let componentCount = 0;
+		let componentMessage;
+		
+		componentNodes.forEach(node => {
+			replaceWithInstanceAndMove(node);
+			componentCount++;
+		});
+
+		//display correct language
+		if (componentCount === 1) {
+			componentMessage = ' component.';
+		} else {
+			componentMessage = ' components.';
+		}
+
+		// terminate plugin and display message
+		figma.closePlugin('Successfully moved ' + componentCount + componentMessage);
+
+	} else {
+		// terminate plugin if nothing selected
+		figma.closePlugin('There are no stay components to move.');
+	}
+
+
+}
 
 // create a component and move it to components page
 function createComponent(nodes) {
@@ -87,7 +126,7 @@ function createComponent(nodes) {
 	// and nodes param is not an array, we turn it into one
 	// so that the loops work
 	var nodeArr;
-	if (multipleComponents === true) {
+	if (multipleComponents) {
 		nodeArr = [nodes];
 	} else {
 		nodeArr = nodes;
@@ -129,9 +168,10 @@ function createComponent(nodes) {
 		}
 	});
 
-	if (componentInside === true) {
+	if (componentInside) {
 		figma.notify('Selection cannot contain a master component');
-		if (multipleComponents === false) {
+		console.log('arrrr!');
+		if (multipleComponents = false) {
 			//update the selection so master components are easy to find
 			figma.currentPage.selection = componentsInsideSelection;
 			figma.closePlugin();
@@ -139,7 +179,7 @@ function createComponent(nodes) {
 		}
 	}
 
-	if (componentInside === false) {
+	if (!componentInside) {
 		// get some basic info  about the selection
 		// we need to find the top most index of the nodes
 		// we also need the x and y coordinate relative to the parent
@@ -253,7 +293,6 @@ function findOrMakeComponentsPage() {
 
 	// check for destablished components page
 	pages.forEach(page => {
-		let pageName = page.name;
 		if (page.getPluginData('components') === 'true') {
 			//dedicated plugins page has already been established
 			componentsPage = page;
@@ -300,23 +339,59 @@ function findOrMakeComponentsPage() {
 	}
 }
 
+// move component and replace with instance
+function replaceWithInstanceAndMove(node) {
+	const parent = node.parent;
+	const instance = node.createInstance();
+	const index = parent.children.indexOf(node);
+	const xCoord = node.x;
+	const yCoord = node.y;
 
-//
+	//move master component
+	let componentInfo = getWidthAndPosition();
+	componentsPage.appendChild(node);
+	node.x = componentInfo.x;
+	node.y = componentInfo.y;
+
+	//move and position instance
+	parent.insertChild(index, instance);
+	instance.x = xCoord;
+	instance.y = yCoord;
+}
+
+
+// 
 // HELPER FUNCTIONS //////////
 //
 
-// get the x/y coordinates to place the new instance
-// get top most index
+// Check to see if array of nodes is empty or not
+function checkData(nodes) {
+	if (nodes.length >= 1) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+// find component nodes
+function findComponents() {
+	const components = figma.root.findAll(c => c.type === 'COMPONENT' && c.parent != componentsPage);
+	return components;
+}
+
+// get the x/y coordinates to place the new instance and get top most index
 function getCoordsIndexParent(nodes) {
+
 	let xCoords = [];
 	let yCoords =[];
 	let indexes = [];
 	let parent = nodes[0].parent;
+	console.log(parent);
 
 	nodes.forEach(node => {
 		xCoords.push(node.x);
 		yCoords.push(node.y);
-		indexes.push(node.parent.children.indexOf(node);
+		indexes.push(parent.children.indexOf(node));
 	});
 
 	let instancePlacement = {

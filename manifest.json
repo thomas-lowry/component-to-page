@@ -3,5 +3,9 @@
   "id": "749583881837062159",
   "api": "1.0.0",
   "main": "code.js",
-  "ui": "ui.html"
+  "ui": "ui.html",
+  "menu": [
+    {"name": "Component to page", "command": "create"},
+    {"name": "Collect stray components", "command": "collect"}
+  ]
 }
