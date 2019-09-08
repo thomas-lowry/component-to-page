@@ -11,6 +11,9 @@ var componentsPage, componentName, toSelect = [], multipleComponents = false;
 if (figma.command === 'collect') {
 	// this command will collect master comonents to components page
 	collect();
+} else if (figma.command === 'move') {
+	// move selected master component(s) to components page
+	move();
 } else {
 	// this option is used for creating new components
 	create();
@@ -81,6 +84,52 @@ function create() {
 		// terminate plugin if nothing selected
 		figma.closePlugin('Please make a selection');
 	}
+}
+
+function move() {
+
+	if (checkData(selection) === true) {
+
+		let moveCount = 0;
+		let toMove = [];
+		let componentMessage;
+
+		selection.forEach(node => {
+			if (node.type === 'COMPONENT') {
+				toMove.push(node);
+			}
+		});
+
+		if (toMove.length > 0) {
+			findOrMakeComponentsPage();
+			toMove.forEach(node => {
+				if (node.parent != componentsPage) {
+					replaceWithInstanceAndMove(node);
+					moveCount++;
+				}
+			});
+		}
+		
+		if (moveCount === 0) {
+			figma.closePlugin('No master components selected');
+
+		} else {
+			//display correct language
+			if (moveCount === 1) {
+				componentMessage = ' component.';
+			} else {
+				componentMessage = ' components.';
+			}
+
+			figma.closePlugin('Successfully moved ' + moveCount + componentMessage);
+		}
+
+	} else {
+		// terminate plugin if nothing selected
+		figma.closePlugin('There are no master components selected');
+	}
+
+
 }
 
 

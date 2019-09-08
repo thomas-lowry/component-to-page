@@ -6,6 +6,7 @@
   "ui": "ui.html",
   "menu": [
     {"name": "Component to page", "command": "create"},
-    {"name": "Collect stray components", "command": "collect"}
+    {"name": "Collect stray components", "command": "collect"},
+    {"name": "Move selected masters to page", "command": "move"}
   ]
 }
