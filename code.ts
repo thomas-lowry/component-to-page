@@ -66,7 +66,7 @@ function create() {
 	if (checkData(selection) === true) {
 
 		// display UI with option to create multiple components
-		figma.showUI(__html__, { width: 360, height: 124 });
+		figma.showUI(__html__, { width: 360, height: 132 });
 		
 		// this passes a message to the UI so we can know to disable or enable the switch for multiple components
 		// if there is only one element selected,  disable this option
