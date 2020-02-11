@@ -219,7 +219,6 @@ function createComponent(nodes) {
 
 	if (componentInside) {
 		figma.notify('Selection cannot contain a master component');
-		console.log('arrrr!');
 		if (multipleComponents = false) {
 			//update the selection so master components are easy to find
 			figma.currentPage.selection = componentsInsideSelection;
@@ -256,7 +255,7 @@ function createComponent(nodes) {
 		// ungroup elements inside the component
 		// we don't need the group anymore
 		for (const node of group.children) {
-			group.parent.appendChild(node)
+			group.parent.appendChild(node);
 		}
 
 		// make an instance in the same place and insert at correct index
@@ -278,35 +277,63 @@ function createComponent(nodes) {
 	
 
 		// check if there is only one child that is a frame
-		// if there is, move contents isnide component and delete frame
-		// preserve background color of original frame
+		// if there is, move contents inside component and delete frame
+		// preserve visual properties of frame
 		if(component.children.length === 1) {
 			let child = component.children[0];
 			let name = child.name;
 			if (!componentName) {
 				componentName = name;
 			}
-			
+
 			if(child.type === 'FRAME' || child.type === 'GROUP') {
 
-				// copy properties from frame/group to component
-				component.backgroundStyleId = child.backgroundStyleId;
-				component.backgrounds = child.backgrounds;
+				// properties specific to frames
+				if (child.type === 'FRAME') {
+					component.bottomLeftRadius = child.bottomLeftRadius;
+					component.bottomRightRadius = child.bottomRightRadius;
+					component.clipsContent = child.clipsContent;
+					component.cornerRadius = child.cornerRadius;
+					component.cornerSmoothing = child.cornerSmoothing;
+					component.counterAxisSizingMode = child.counterAxisSizingMode;
+					component.dashPattern = child.dashPattern;
+					component.fillStyleId = child.fillStyleId;
+					component.fills = child.fills;
+					component.horizontalPadding = child.horizontalPadding;
+					component.itemSpacing = child.itemSpacing;
+					component.layoutMode = child.layoutMode;
+					component.numberOfFixedChildren = child.numberOfFixedChildren;
+					component.overflowDirection = child.overflowDirection;
+					component.strokeAlign = child.strokeAlign;
+					component.strokeCap = child.strokeCap;
+					component.strokeJoin = child.strokeJoin;
+					component.strokeMiterLimit = child.strokeMiterLimit;
+					component.strokeStyleId = child.strokeStyleId;
+					component.strokeWeight = child.strokeWeight;
+					component.strokes = child.strokes;
+					component.topLeftRadius = child.topLeftRadius;
+					component.topRightRadius = child.topRightRadius;
+					component.verticalPadding = child.verticalPadding;
+					
+					//copy constraint properties to instance
+					instance.constraints = child.constraints;
+				}
+
+				//applies to both groups and frames
+				component.constrainProportions = child.constrainProportions;
 				component.blendMode = child.blendMode;
-				component.clipsContent = child.clipsContent;
 				component.effectStyleId = child.effectStyleId;
 				component.effects = child.effects;
+				component.expanded = child.expanded;
 				component.exportSettings = child.exportSettings;
 				component.gridStyleId = child.gridStyleId;
 				component.guides = child.guides;
+				component.isMask = child.isMask;
 				component.layoutGrids = child.layoutGrids;
+				component.layoutAlign = child.layoutAlign;
 				component.locked = child.locked;
 				component.opacity = child.opacity;
-				component.exportSettings = child.exportSettings;
 				component.visible = child.visible;
-
-				// copy properties to instance
-				instance.constraints = child.constraints
 
 				if (child.children.length > 0) {
 					let children = child.children;
@@ -435,7 +462,6 @@ function getCoordsIndexParent(nodes) {
 	let yCoords =[];
 	let indexes = [];
 	let parent = nodes[0].parent;
-	console.log(parent);
 
 	nodes.forEach(node => {
 		xCoords.push(node.x);
