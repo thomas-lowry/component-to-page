@@ -67,7 +67,7 @@ function create() {
 
 		// display UI with option to create multiple components
 		figma.showUI(__html__, { width: 360, height: 132 });
-		
+
 		// this passes a message to the UI so we can know to disable or enable the switch for multiple components
 		// if there is only one element selected,  disable this option
 		if (selection.length > 1) {
@@ -109,7 +109,7 @@ function move() {
 				}
 			});
 		}
-		
+
 		if (moveCount === 0) {
 			figma.closePlugin('No master components selected');
 
@@ -143,7 +143,7 @@ function collect() {
 
 		let componentCount = 0;
 		let componentMessage;
-		
+
 		componentNodes.forEach(node => {
 			replaceWithInstanceAndMove(node);
 			componentCount++;
@@ -203,7 +203,7 @@ function createComponent(nodes) {
 					}
 					if (child.type === 'FRAME' || child.type === 'GROUP') {
 						if (child.children.length >= 1) {
-							child.children.forEach(grandChild =>{
+							child.children.forEach(grandChild => {
 								if (grandChild.type === 'COMPONENT') {
 									componentInside = true;
 									componentsInsideSelection.push(grandChild);
@@ -267,26 +267,26 @@ function createComponent(nodes) {
 			} else {
 				instanceIndex = instancePlacement.parent.children.length;
 			}
-		}  else {
+		} else {
 			instanceIndex = instancePlacement.index;
 		}
 
 		instancePlacement.parent.insertChild(instanceIndex, instance);
 		instance.x = instancePlacement.x;
 		instance.y = instancePlacement.y;
-	
+
 
 		// check if there is only one child that is a frame
 		// if there is, move contents inside component and delete frame
 		// preserve visual properties of frame
-		if(component.children.length === 1) {
+		if (component.children.length === 1) {
 			let child = component.children[0];
 			let name = child.name;
 			if (!componentName) {
 				componentName = name;
 			}
 
-			if(child.type === 'FRAME' || child.type === 'GROUP') {
+			if (child.type === 'FRAME' || child.type === 'GROUP') {
 
 				// properties specific to frames
 				if (child.type === 'FRAME') {
@@ -314,7 +314,7 @@ function createComponent(nodes) {
 					component.topLeftRadius = child.topLeftRadius;
 					component.topRightRadius = child.topRightRadius;
 					component.verticalPadding = child.verticalPadding;
-					
+
 					//copy constraint properties to instance
 					instance.constraints = child.constraints;
 				}
@@ -364,7 +364,7 @@ function createComponent(nodes) {
 
 // find the dedicated components page or make one
 function findOrMakeComponentsPage() {
-	
+
 	let pages = figma.root.children;
 
 	// check for destablished components page
@@ -409,8 +409,8 @@ function findOrMakeComponentsPage() {
 
 	if (!componentsPage) {
 		let newPage = figma.createPage();
-		newPage.name = 'Components';
-		newPage.setPluginData('components','true');
+		newPage.name = '❖ Components';
+		newPage.setPluginData('components', 'true');
 		componentsPage = newPage;
 	}
 }
@@ -459,7 +459,7 @@ function findComponents() {
 function getCoordsIndexParent(nodes) {
 
 	let xCoords = [];
-	let yCoords =[];
+	let yCoords = [];
 	let indexes = [];
 	let parent = nodes[0].parent;
 
@@ -488,7 +488,7 @@ function getWidthAndPosition() {
 		// group all of the children on components page
 		// I do this because its a simple way to get overall width of elements
 		let componentGroup = figma.group(componentsPage.children, componentsPage);
-		
+
 		// populate object with all info req. to position new components
 		let result = {
 			'x': componentGroup.x + componentGroup.width + componentSpacing,
